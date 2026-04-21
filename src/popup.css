@@ -1,5 +1,5 @@
 :root {
-  color-scheme: light;
+  color-scheme: light dark;
   font-family: Arial, sans-serif;
 }
 
@@ -29,14 +29,14 @@ button {
   border-radius: 6px;
   padding: 10px;
   cursor: pointer;
-  background: #0b57d0;
+  background: #0a3d91;
   color: #fff;
   font-weight: 600;
 }
 
 button.secondary {
-  background: #e8eaed;
-  color: #1f1f1f;
+  background: #d3d6db;
+  color: #111;
 }
 
 .hidden {

@@ -1,8 +1,10 @@
 (function initDownloaderLibrary(globalScope) {
+  const VIDEO_ID_CAPTURE_GROUP = '([a-zA-Z0-9_-]{11})';
+  const DEFAULT_DOWNLOADER_BASE_URL = 'https://example.com/download';
   const YOUTUBE_ID_PATTERNS = [
-    /[?&]v=([a-zA-Z0-9_-]{11})/, 
-    /youtu\.be\/([a-zA-Z0-9_-]{11})/, 
-    /youtube\.com\/shorts\/([a-zA-Z0-9_-]{11})/
+    new RegExp(`[?&]v=${VIDEO_ID_CAPTURE_GROUP}`),
+    new RegExp(`youtu\\.be\\/${VIDEO_ID_CAPTURE_GROUP}`),
+    new RegExp(`youtube\\.com\\/shorts\\/${VIDEO_ID_CAPTURE_GROUP}`)
   ];
 
   function extractYoutubeVideoId(url) {
@@ -25,8 +27,7 @@
   }
 
   function normalizeBaseUrl(baseUrl) {
-    const fallback = 'https://example.com/download';
-    const raw = typeof baseUrl === 'string' && baseUrl.trim() ? baseUrl.trim() : fallback;
+    const raw = typeof baseUrl === 'string' && baseUrl.trim() ? baseUrl.trim() : DEFAULT_DOWNLOADER_BASE_URL;
     return raw.endsWith('/') ? raw.slice(0, -1) : raw;
   }
 
@@ -38,9 +39,12 @@
       throw new Error('A valid YouTube video URL is required.');
     }
 
-    const selectedFormat = format === 'mp3' ? 'mp3' : 'mp4';
+    if (format !== 'mp3' && format !== 'mp4') {
+      throw new Error('Format must be either "mp3" or "mp4".');
+    }
+
     target.searchParams.set('url', videoUrl);
-    target.searchParams.set('format', selectedFormat);
+    target.searchParams.set('format', format);
     return target.toString();
   }
 
@@ -48,7 +52,8 @@
     extractYoutubeVideoId,
     isYouTubeVideoUrl,
     normalizeBaseUrl,
-    createDownloadUrl
+    createDownloadUrl,
+    DEFAULT_DOWNLOADER_BASE_URL
   };
 
   if (typeof module !== 'undefined' && module.exports) {

@@ -7,7 +7,7 @@ function setMessage(text) {
 }
 
 function loadCurrentSetting() {
-  chrome.storage.sync.get({ downloaderBaseUrl: 'https://example.com/download' }, (settings) => {
+  chrome.storage.sync.get({ downloaderBaseUrl: DownloaderLib.DEFAULT_DOWNLOADER_BASE_URL }, (settings) => {
     baseUrlInput.value = settings.downloaderBaseUrl;
   });
 }
@@ -21,11 +21,12 @@ saveButton.addEventListener('click', () => {
       throw new Error('Only http/https URLs are allowed.');
     }
 
-    chrome.storage.sync.set({ downloaderBaseUrl: url.toString() }, () => {
+    chrome.storage.sync.set({ downloaderBaseUrl: `${url.origin}${url.pathname}` }, () => {
       setMessage('Saved.');
     });
-  } catch {
-    setMessage('Enter a valid http/https URL.');
+  } catch (error) {
+    console.error(error);
+    setMessage(error.message || 'Enter a valid http/https URL.');
   }
 });
 

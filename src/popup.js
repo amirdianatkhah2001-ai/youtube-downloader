@@ -20,7 +20,7 @@ function withChrome(callback) {
 
 function readSettings(cb) {
   withChrome(() => {
-    chrome.storage.sync.get({ downloaderBaseUrl: 'https://example.com/download' }, (settings) => {
+    chrome.storage.sync.get({ downloaderBaseUrl: DownloaderLib.DEFAULT_DOWNLOADER_BASE_URL }, (settings) => {
       cb(settings.downloaderBaseUrl);
     });
   });
@@ -64,7 +64,7 @@ function handleDownloadClick(format) {
       const downloadUrl = DownloaderLib.createDownloadUrl(baseUrl, activeVideoUrl, format);
       chrome.tabs.create({ url: downloadUrl });
     } catch (error) {
-      setStatus(error.message || 'Unable to build download URL.');
+      setStatus(error.message || 'Invalid configuration or URL. Please check your settings.');
     }
   });
 }
